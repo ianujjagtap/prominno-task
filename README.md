@@ -1,90 +1,82 @@
-# Seller & Product Management API
+# Seller & Product Management API 🚀
 
-A modern Node.js backend for managing sellers and their products, featuring on-the-fly PDF generation and secure image uploads.
+A high-performance, production-ready Node.js backend for managing sellers and products. This project features secure authentication, multi-brand product management with image uploads, and on-the-fly PDF generation.
 
-## Features
+---
 
-- **ESM-First**: Built with native Node.js ES modules.
-- **Path Aliases**: Clean imports using `@/` aliases.
-- **Auto-Seeding**: Automatic admin user creation on first run.
-- **Authentication**: Role-based access control (Admin & Seller).
-- **Product Management**: Support for multiple brands and images per product.
-- **PDF Generation**: Live streaming of product brochures with automatic price calculation.
-- **API Documentation**: Integrated Swagger UI at `/api-docs`.
+## 📖 Live API Documentation
 
-## Tech Stack
+The most efficient way to explore and test the APIs is through the integrated **Swagger UI**. 
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB (Mongoose)
-- **Validation**: Zod
-- **Documentation**: Swagger (OpenAPI 3.0)
-- **PDF Engine**: PDFKit
-- **File Uploads**: Multer
+Once the server is running, access it at:
+👉 **`http://localhost:3000/api-docs`**
 
-## Getting Started
+*Note: For deployed versions, replace `localhost:3000` with the deployment URL.*
 
-### Prerequisites
+---
 
-- Node.js (v18+)
-- MongoDB (Running locally or on Atlas)
+## ✨ Key Features
 
-### Installation
+- **Modern Architecture**: Pure ES Modules (ESM) with `@/` path aliasing for clean, maintainable imports.
+- **Role-Based Security**: Strict access control for Admins (Seller management) and Sellers (Product management).
+- **Advanced Product Management**: 
+  - Dynamic multi-brand support per product.
+  - Multi-file image uploads via Multer.
+  - Automatic disk cleanup of associated images upon product deletion.
+- **Live PDF Engine**: Real-time PDF generation with embedded images, custom branding, and automatic price calculations.
+- **Robust Validation**: Type-safe request validation and sanitization using **Zod**.
+- **Auto-Provisioning**: Automated Admin seeding from environment variables for zero-config first runs.
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Configure your `.env` file (copied from `.env.example`):
-   ```text
-   NODE_ENV=development
-   PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/backend_task
-   JWT_SECRET=your_secret_key
-   ADMIN_EMAIL=admin@backend.com
-   ADMIN_PASSWORD=admin12345678
-   ```
+---
 
-### Running the App
+## 🛠️ Tech Stack
 
-- **Development mode**:
-  ```bash
-  npm run dev
-  ```
-- **Production mode**:
-  ```bash
-  npm start
-  ```
+- **Backend**: Node.js, Express.js (v5.x)
+- **Database**: MongoDB via Mongoose
+- **Security**: JWT (JsonWebToken), BcryptJS, Helmet, Express Rate Limit
+- **Storage**: disk storage (Multer)
+- **PDF**: PDFKit
+- **Docs**: Swagger UI, OpenAPI 3.0
 
-## Deployment
+---
 
-This project is ready to be deployed on **Render** using **MongoDB Atlas**.
+## 🚀 Getting Started
 
-### 1. Database Setup (MongoDB Atlas)
+### 1. Clone & Install
+```bash
+git clone https://github.com/ianujjagtap/prominno-task.git
+cd prominno-task
+npm install
+```
 
-1.  Create a free account at [mongodb.com/atlas](https://www.mongodb.com/atlas).
-2.  Create a new Shared Cluster (Free).
-3.  Add a Database User (Username & Password).
-4.  Add your IP (or `0.0.0.0/0`) to the IP Access List.
-5.  Get your Connection String (`mongodb+srv://...`).
+### 2. Environment Configuration
+Create a `.env` file in the root:
+```text
+PORT=3000
+MONGODB_URI=your_mongodb_atlas_uri
+JWT_SECRET=your_secure_secret
+ADMIN_EMAIL=admin@backend.com
+ADMIN_PASSWORD=your_secure_password
+```
 
-### 2. Deploy on Render
+### 3. Run
+- **Development**: `npm run dev` (with hot-reloading)
+- **Production**: `npm start`
 
-1.  Create a New **Web Service** on [Render](https://render.com).
-2.  Connect this GitHub repository.
-3.  Settings:
-    - **Runtime**: Node
-    - **Build Command**: `npm install`
-    - **Start Command**: `npm start`
-4.  Add **Environment Variables**:
-    - `NODE_ENV`: `production`
-    - `MONGODB_URI`: *Your Atlas Connection String*
-    - `JWT_SECRET`: *A secure random string*
-    - `ADMIN_EMAIL`: `admin@backend.com`
-    - `ADMIN_PASSWORD`: `your_secure_password`
+---
 
-### 3. File Persistence Note
+## ☁️ Deployment Guide (Render + MongoDB Atlas)
 
-Render's disk is ephemeral. For production use, consider using a Cloudinary or S3 integration for image uploads, or attach a persistent Render Disk to the `/uploads` directory.
+This project is optimized for deployment on **Render**.
 
+1. **Database**: Use [MongoDB Atlas](https://www.mongodb.com/atlas) to host the data.
+2. **Web Service**: Create a new Web Service on Render and connect the repository.
+3. **Build & Start**:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+4. **Environment Variables**: Copy key values from your local `.env` to Render's Environment settings.
+
+---
+
+## 📄 License
+This project is licensed under the MIT License.
