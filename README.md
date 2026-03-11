@@ -57,11 +57,34 @@ A modern Node.js backend for managing sellers and their products, featuring on-t
   npm start
   ```
 
-### API Documentation
+## Deployment
 
-Once the server is running, visit:
-`http://localhost:3000/api-docs`
+This project is ready to be deployed on **Render** using **MongoDB Atlas**.
 
-## License
+### 1. Database Setup (MongoDB Atlas)
 
-MIT
+1.  Create a free account at [mongodb.com/atlas](https://www.mongodb.com/atlas).
+2.  Create a new Shared Cluster (Free).
+3.  Add a Database User (Username & Password).
+4.  Add your IP (or `0.0.0.0/0`) to the IP Access List.
+5.  Get your Connection String (`mongodb+srv://...`).
+
+### 2. Deploy on Render
+
+1.  Create a New **Web Service** on [Render](https://render.com).
+2.  Connect this GitHub repository.
+3.  Settings:
+    - **Runtime**: Node
+    - **Build Command**: `npm install`
+    - **Start Command**: `npm start`
+4.  Add **Environment Variables**:
+    - `NODE_ENV`: `production`
+    - `MONGODB_URI`: *Your Atlas Connection String*
+    - `JWT_SECRET`: *A secure random string*
+    - `ADMIN_EMAIL`: `admin@backend.com`
+    - `ADMIN_PASSWORD`: `your_secure_password`
+
+### 3. File Persistence Note
+
+Render's disk is ephemeral. For production use, consider using a Cloudinary or S3 integration for image uploads, or attach a persistent Render Disk to the `/uploads` directory.
+
