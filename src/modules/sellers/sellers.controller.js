@@ -6,7 +6,7 @@ import { messages } from "@/constants/index.js";
 export const createSellerController = asyncHandler(async (req, res) => {
   const body = req.valid?.body || req.body;
   if (!body || !body.email || !body.password || !body.name) {
-    return res.status(400).json({ success: false, error: "Name, email and password are required" });
+    return res.status(400).json({ success: false, error: messages.MISSING_SELLER_FIELDS });
   }
 
   const seller = await sellersService.createSeller(body);
