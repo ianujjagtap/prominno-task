@@ -5,16 +5,16 @@ import Seller from "@/modules/sellers/sellers.model.js";
 import env from "@/config/env.js";
 import { AuthenticationError } from "@/utils/errors.js";
 import { messages } from "@/constants/index.js";
-import tryCatch from "@/utils/tryCatch.js";
+import catchAsync from "@/utils/catchAsync.js";
 
 // generates a jwt with id and role
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, env.JWT_SECRET, { expiresIn: "24h" });
 };
 
-export const adminLogin = tryCatch(async (email, password) => {
+export const adminLogin = catchAsync(async (email, password) => {
   if (!email || !password) {
-    throw new Error("Email and password are required for login");
+    throw new Error(messages.LOGIN_REQUIRED_FIELDS);
   }
 
   const admin = await Admin.findOne({ email: email.toLowerCase() });
@@ -30,9 +30,9 @@ export const adminLogin = tryCatch(async (email, password) => {
   };
 });
 
-export const sellerLogin = tryCatch(async (email, password) => {
+export const sellerLogin = catchAsync(async (email, password) => {
   if (!email || !password) {
-    throw new Error("Email and password are required for login");
+    throw new Error(messages.LOGIN_REQUIRED_FIELDS);
   }
 
   const seller = await Seller.findOne({ email: email.toLowerCase() });
