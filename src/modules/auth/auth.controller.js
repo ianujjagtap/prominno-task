@@ -6,7 +6,7 @@ import { messages } from "@/constants/index.js";
 export const adminLoginController = asyncHandler(async (req, res) => {
   const body = req.valid?.body || req.body;
   if (!body || !body.email || !body.password) {
-    return res.status(400).json({ success: false, error: "Email and password are required" });
+    return res.status(400).json({ success: false, error: messages.LOGIN_REQUIRED_FIELDS });
   }
 
   const { email, password } = body;
@@ -17,7 +17,7 @@ export const adminLoginController = asyncHandler(async (req, res) => {
 export const sellerLoginController = asyncHandler(async (req, res) => {
   const body = req.valid?.body || req.body;
   if (!body || !body.email || !body.password) {
-    return res.status(400).json({ success: false, error: "Email and password are required" });
+    return res.status(400).json({ success: false, error: messages.LOGIN_REQUIRED_FIELDS });
   }
 
   const { email, password } = body;
