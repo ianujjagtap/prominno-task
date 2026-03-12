@@ -5,24 +5,54 @@ import { streamProductPdf } from "@/pdf/productPdf.js";
 import { messages } from "@/constants/index.js";
 
 export const createProductController = asyncHandler(async (req, res) => {
-  const files = req.files || [];
-  const product = await productsService.createProduct(req.valid.body, req.user.id, files);
-  successResponse(res, messages.PRODUCT_CREATED, product, 201);
+  try {
+    const body = req.valid?.body || req.body;
+    if (!body || !body.productName || !body.brands) {
+      return res.status(400).json({ success: false, error: "Product name and brands are required" });
+    }
+
+    const files = req.files || [];
+    const product = await productsService.createProduct(body, req.user.id, files);
+    successResponse(res, messages.PRODUCT_CREATED, product, 201);
+  } catch (error) {
+    throw error;
+  }
 });
 
 export const listProductsController = asyncHandler(async (req, res) => {
-  const { page, limit } = req.valid.query;
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
-  const { products, total } = await productsService.listProducts(req.user.id, page, limit, baseUrl);
-  paginatedResponse(res, messages.PRODUCTS_FETCHED, products, total, page, limit);
+  try {
+    const query = req.valid?.query || req.query;
+    const page = parseInt(query?.page) || 1;
+    const limit = parseInt(query?.limit) || 10;
+
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const { products, total } = await productsService.listProducts(req.user.id, page, limit, baseUrl);
+    paginatedResponse(res, messages.PRODUCTS_FETCHED, products, total, page, limit);
+  } catch (error) {
+    throw error;
+  }
 });
 
 export const deleteProductController = asyncHandler(async (req, res) => {
-  const result = await productsService.deleteProduct(req.params.id, req.user.id);
-  successResponse(res, messages.PRODUCT_DELETED, result);
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ success: false, error: "Product ID is required" });
+
+    const result = await productsService.deleteProduct(id, req.user.id);
+    successResponse(res, messages.PRODUCT_DELETED, result);
+  } catch (error) {
+    throw error;
+  }
 });
 
 export const getProductPdfController = asyncHandler(async (req, res) => {
-  const product = await productsService.getProductById(req.params.id);
-  streamProductPdf(product, res);
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ success: false, error: "Product ID is required" });
+
+    const product = await productsService.getProductById(id);
+    streamProductPdf(product, res);
+  } catch (error) {
+    throw error;
+  }
 });

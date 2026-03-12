@@ -5,65 +5,91 @@ import fs from "fs";
 import path from "path";
 
 export const createProduct = async (data, sellerId, files) => {
-  const brands = data.brands.map((brand, i) => ({
-    brandName: brand.brandName,
-    detail: brand.detail,
-    price: brand.price,
-    imageUrl: files[i] ? `/uploads/brands/${files[i].filename}` : "",
-  }));
+  if (!data || !data.productName || !data.brands) {
+    throw new Error("Product name and brands are required");
+  }
 
-  const product = await Product.create({
-    productName: data.productName,
-    productDescription: data.productDescription,
-    sellerId,
-    brands,
-  });
+  try {
+    const brands = data.brands.map((brand, i) => ({
+      brandName: brand.brandName,
+      detail: brand.detail,
+      price: brand.price,
+      imageUrl: files[i] ? `/uploads/brands/${files[i].filename}` : "",
+    }));
 
-  return product;
+    const product = await Product.create({
+      productName: data.productName,
+      productDescription: data.productDescription,
+      sellerId,
+      brands,
+    });
+
+    return product;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const listProducts = async (sellerId, page, limit, baseUrl) => {
-  const skip = (page - 1) * limit;
+  if (!sellerId) throw new Error("Seller ID is required");
 
-  const [products, total] = await Promise.all([
-    Product.find({ sellerId }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-    Product.countDocuments({ sellerId }),
-  ]);
+  try {
+    const skip = (page - 1) * limit;
 
-  const productsWithPdf = products.map((p) => ({
-    ...p,
-    pdfUrl: `${baseUrl}/api/v1/products/${p._id}/pdf`,
-  }));
+    const [products, total] = await Promise.all([
+      Product.find({ sellerId }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      Product.countDocuments({ sellerId }),
+    ]);
 
-  return { products: productsWithPdf, total };
+    const productsWithPdf = products.map((p) => ({
+      ...p,
+      pdfUrl: `${baseUrl}/api/v1/products/${p._id}/pdf`,
+    }));
+
+    return { products: productsWithPdf, total };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getProductById = async (productId, sellerId = null) => {
-  const product = await Product.findById(productId).lean();
-  if (!product) throw new NotFoundError(messages.PRODUCT_NOT_FOUND);
+  if (!productId) throw new Error("Product ID is required");
 
-  if (sellerId && product.sellerId.toString() !== sellerId) {
-    throw new AuthorizationError(messages.PRODUCT_ACCESS_DENIED);
+  try {
+    const product = await Product.findById(productId).lean();
+    if (!product) throw new NotFoundError(messages.PRODUCT_NOT_FOUND);
+
+    if (sellerId && product.sellerId.toString() !== sellerId) {
+      throw new AuthorizationError(messages.PRODUCT_ACCESS_DENIED);
+    }
+
+    return product;
+  } catch (error) {
+    throw error;
   }
-
-  return product;
 };
 
 export const deleteProduct = async (productId, sellerId) => {
-  const product = await Product.findById(productId);
-  if (!product) throw new NotFoundError(messages.PRODUCT_NOT_FOUND);
+  if (!productId || !sellerId) throw new Error("Product ID and Seller ID are required");
 
-  if (product.sellerId.toString() !== sellerId) {
-    throw new AuthorizationError(messages.PRODUCT_DELETE_DENIED);
-  }
+  try {
+    const product = await Product.findById(productId);
+    if (!product) throw new NotFoundError(messages.PRODUCT_NOT_FOUND);
 
-  for (const brand of product.brands) {
-    if (brand.imageUrl) {
-      const imagePath = path.join(process.cwd(), brand.imageUrl);
-      if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+    if (product.sellerId.toString() !== sellerId) {
+      throw new AuthorizationError(messages.PRODUCT_DELETE_DENIED);
     }
-  }
 
-  await Product.findByIdAndDelete(productId);
-  return { message: messages.PRODUCT_DELETED };
+    for (const brand of product.brands) {
+      if (brand.imageUrl) {
+        const imagePath = path.join(process.cwd(), brand.imageUrl);
+        if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+      }
+    }
+
+    await Product.findByIdAndDelete(productId);
+    return { message: messages.PRODUCT_DELETED };
+  } catch (error) {
+    throw error;
+  }
 };
