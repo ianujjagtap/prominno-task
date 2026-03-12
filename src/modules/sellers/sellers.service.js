@@ -2,11 +2,11 @@ import bcrypt from "bcryptjs";
 import Seller from "./sellers.model.js";
 import { ConflictError } from "@/utils/errors.js";
 import { messages } from "@/constants/index.js";
-import tryCatch from "@/utils/tryCatch.js";
+import catchAsync from "@/utils/catchAsync.js";
 
-export const createSeller = tryCatch(async (data) => {
+export const createSeller = catchAsync(async (data) => {
   if (!data || !data.email || !data.password || !data.name) {
-    throw new Error("Invalid seller data: name, email and password are required");
+    throw new Error(messages.INVALID_SELLER_DATA);
   }
 
   const existing = await Seller.findOne({ email: data.email.toLowerCase() });
@@ -37,9 +37,9 @@ export const createSeller = tryCatch(async (data) => {
   };
 });
 
-export const listSellers = tryCatch(async (page, limit) => {
+export const listSellers = catchAsync(async (page, limit) => {
   if (page < 1 || limit < 1) {
-    throw new Error("Page and limit must be positive integers");
+    throw new Error(messages.INVALID_PAGINATION);
   }
 
   const skip = (page - 1) * limit;
