@@ -1,5 +1,5 @@
 // wraps any async function with try-catch error handling
-const tryCatch = (fn) => async (...args) => {
+const catchAsync = (fn) => async (...args) => {
   try {
     return await fn(...args);
   } catch (error) {
@@ -7,4 +7,4 @@ const tryCatch = (fn) => async (...args) => {
   }
 };
 
-export default tryCatch;
+export default catchAsync;
