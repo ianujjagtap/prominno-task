@@ -1,39 +1,50 @@
 import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
+import { messages } from "@/constants/index.js";
 
 export const streamProductPdf = (product, res) => {
-  const doc = new PDFDocument({ margin: 50 });
+  if (!product) throw new Error(messages.PRODUCT_DATA_REQUIRED);
 
-  res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `inline; filename="${product.productName}.pdf"`);
-  doc.pipe(res);
+  try {
+    const doc = new PDFDocument({ margin: 50 });
 
-  // product info
-  doc.fontSize(20).text(product.productName, { align: "center" });
-  doc.moveDown();
-  doc.fontSize(12).text(product.productDescription);
-  doc.moveDown();
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="${product.productName}.pdf"`);
+    doc.pipe(res);
 
-  // brands
-  let total = 0;
+    // product info
+    doc.fontSize(20).text(product.productName, { align: "center" });
+    doc.moveDown();
+    doc.fontSize(12).text(product.productDescription);
+    doc.moveDown();
 
-  for (const brand of product.brands) {
-    doc.fontSize(12).text(`${brand.brandName} — Rs.${brand.price}`);
-    doc.fontSize(10).text(brand.detail);
+    // brands
+    let total = 0;
 
-    const imgPath = path.join(process.cwd(), brand.imageUrl || "");
-    if (brand.imageUrl && fs.existsSync(imgPath)) {
-      try { doc.image(imgPath, { width: 80 }); } catch { /* skip */ }
+    for (const brand of product.brands) {
+      doc.fontSize(12).text(`${brand.brandName} — Rs.${brand.price}`);
+      doc.fontSize(10).text(brand.detail);
+
+      const imgPath = path.join(process.cwd(), brand.imageUrl || "");
+      if (brand.imageUrl && fs.existsSync(imgPath)) {
+        try {
+          doc.image(imgPath, { width: 80 });
+        } catch {
+          /* skip broken images */
+        }
+      }
+
+      total += brand.price;
+      doc.moveDown();
     }
 
-    total += brand.price;
+    // total
     doc.moveDown();
+    doc.fontSize(14).text(`Total: Rs.${total}`, { align: "right" });
+
+    doc.end();
+  } catch (error) {
+    throw error;
   }
-
-  // total
-  doc.moveDown();
-  doc.fontSize(14).text(`Total: Rs.${total}`, { align: "right" });
-
-  doc.end();
 };
