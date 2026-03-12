@@ -6,18 +6,27 @@ export const messages = {
   LOGIN_REQUIRED: "Authentication required",
   FORBIDDEN: "Forbidden",
   ACCESS_DENIED: "You do not have permission to access this resource",
+  LOGIN_REQUIRED_FIELDS: "Email and password are required",
 
   // validation
   VALIDATION_FAILED: "Validation failed",
+  INVALID_ID: "Invalid ID format",
+  MISSING_PRODUCT_ID: "Product ID is required",
+  MISSING_SELLER_ID: "Seller ID is required",
+  MISSING_PRODUCT_FIELDS: "Product name and brands are required",
+  MISSING_SELLER_FIELDS: "Name, email and password are required",
+  INVALID_SELLER_DATA: "Invalid seller data: name, email and password are required",
+  INVALID_PAGINATION: "Page and limit must be positive integers",
 
   // seller
   EMAIL_TAKEN: "Email already registered",
 
   // product
   PRODUCT_NOT_FOUND: "Product not found",
-  PRODUCT_DELETED: "Product deleted successfully",
   PRODUCT_ACCESS_DENIED: "You do not have permission to access this product",
   PRODUCT_DELETE_DENIED: "You do not have permission to delete this product",
+  PRODUCT_DATA_REQUIRED: "Product data is required for PDF generation",
+  MISSING_PRODUCT_AND_SELLER: "Product ID and Seller ID are required",
 
   // upload
   BAD_FILE_TYPE: "Only JPEG, PNG, and WebP images are allowed",
