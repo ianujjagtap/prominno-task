@@ -3,11 +3,11 @@ import { NotFoundError, AuthorizationError } from "@/utils/errors.js";
 import { messages } from "@/constants/index.js";
 import fs from "fs";
 import path from "path";
-import tryCatch from "@/utils/tryCatch.js";
+import catchAsync from "@/utils/catchAsync.js";
 
-export const createProduct = tryCatch(async (data, sellerId, files) => {
+export const createProduct = catchAsync(async (data, sellerId, files) => {
   if (!data || !data.productName || !data.brands) {
-    throw new Error("Product name and brands are required");
+    throw new Error(messages.MISSING_PRODUCT_FIELDS);
   }
 
   const brands = data.brands.map((brand, i) => ({
@@ -27,8 +27,8 @@ export const createProduct = tryCatch(async (data, sellerId, files) => {
   return product;
 });
 
-export const listProducts = tryCatch(async (sellerId, page, limit, baseUrl) => {
-  if (!sellerId) throw new Error("Seller ID is required");
+export const listProducts = catchAsync(async (sellerId, page, limit, baseUrl) => {
+  if (!sellerId) throw new Error(messages.MISSING_SELLER_ID);
 
   const skip = (page - 1) * limit;
 
@@ -45,8 +45,8 @@ export const listProducts = tryCatch(async (sellerId, page, limit, baseUrl) => {
   return { products: productsWithPdf, total };
 });
 
-export const getProductById = tryCatch(async (productId, sellerId = null) => {
-  if (!productId) throw new Error("Product ID is required");
+export const getProductById = catchAsync(async (productId, sellerId = null) => {
+  if (!productId) throw new Error(messages.MISSING_PRODUCT_ID);
 
   const product = await Product.findById(productId).lean();
   if (!product) throw new NotFoundError(messages.PRODUCT_NOT_FOUND);
@@ -58,8 +58,8 @@ export const getProductById = tryCatch(async (productId, sellerId = null) => {
   return product;
 });
 
-export const deleteProduct = tryCatch(async (productId, sellerId) => {
-  if (!productId || !sellerId) throw new Error("Product ID and Seller ID are required");
+export const deleteProduct = catchAsync(async (productId, sellerId) => {
+  if (!productId || !sellerId) throw new Error(messages.MISSING_PRODUCT_AND_SELLER);
 
   const product = await Product.findById(productId);
   if (!product) throw new NotFoundError(messages.PRODUCT_NOT_FOUND);
