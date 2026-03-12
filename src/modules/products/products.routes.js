@@ -10,7 +10,6 @@ import requireRole from "@/middleware/role.middleware.js";
 import validate from "@/middleware/validate.middleware.js";
 import uploadBrandImages from "@/middleware/upload.middleware.js";
 import { CreateProductSchema, PaginationSchema } from "./products.schema.js";
-import { IdParamSchema } from "@/utils/common.schema.js";
 
 const router = Router();
 
@@ -35,7 +34,7 @@ const router = Router();
  *               type: string
  *               format: binary
  */
-router.get("/:id/pdf", validate(IdParamSchema, "params"), getProductPdfController);
+router.get("/:id/pdf", getProductPdfController);
 
 router.use(authenticate, requireRole("seller"));
 
@@ -119,6 +118,6 @@ router.get("/", validate(PaginationSchema, "query"), listProductsController);
  *       200:
  *         description: product deleted
  */
-router.delete("/:id", validate(IdParamSchema, "params"), deleteProductController);
+router.delete("/:id", deleteProductController);
 
 export default router;
