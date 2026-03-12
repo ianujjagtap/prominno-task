@@ -7,7 +7,7 @@ import { messages } from "@/constants/index.js";
 export const createProductController = asyncHandler(async (req, res) => {
   const body = req.valid?.body || req.body;
   if (!body || !body.productName || !body.brands) {
-    return res.status(400).json({ success: false, error: "Product name and brands are required" });
+    return res.status(400).json({ success: false, error: messages.MISSING_PRODUCT_FIELDS });
   }
 
   const files = req.files || [];
@@ -27,7 +27,7 @@ export const listProductsController = asyncHandler(async (req, res) => {
 
 export const deleteProductController = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ success: false, error: "Product ID is required" });
+  if (!id) return res.status(400).json({ success: false, error: messages.MISSING_PRODUCT_ID });
 
   const result = await productsService.deleteProduct(id, req.user.id);
   successResponse(res, messages.PRODUCT_DELETED, result);
@@ -35,7 +35,7 @@ export const deleteProductController = asyncHandler(async (req, res) => {
 
 export const getProductPdfController = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ success: false, error: "Product ID is required" });
+  if (!id) return res.status(400).json({ success: false, error: messages.MISSING_PRODUCT_ID });
 
   const product = await productsService.getProductById(id);
   streamProductPdf(product, res);
